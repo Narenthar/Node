@@ -1,36 +1,34 @@
-async function getMovies(client, filter) {
+import { client } from "./index.js";
+
+async function getMovies(filter) {
   return await client
     .db("guviexample")
     .collection("movies")
-    .find(filter)
-    .toArray();
+    .find(filter).toArray();
 }
-async function updateMovieById(client, id, data) {
+async function updateMoviesById(id, data) {
   return await client
     .db("guviexample")
     .collection("movies")
     .updateOne({ id: id }, { $set: data });
 }
-async function addMovies(client, data) {
-  return await client.db("guviexample").collection("movies").insertMany(data);
+async function insertMovies(data) {
+  return await client
+    .db("guviexample")
+    .collection("movies")
+    .insertMany(data);
 }
-async function deleteMovieById(client, id) {
+async function deleteMoviesById(id) {
   return await client
     .db("guviexample")
     .collection("movies")
     .deleteOne({ id: id });
 }
-async function getMoviesById(client, id) {
+async function getMovieById(id) {
   return await client
     .db("guviexample")
     .collection("movies")
     .findOne({ id: id });
 }
 
-export {
-  getMoviesById,
-  deleteMovieById,
-  addMovies,
-  updateMovieById,
-  getMovies,
-};
+export { getMovieById, deleteMoviesById, insertMovies, updateMoviesById, getMovies };
