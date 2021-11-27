@@ -1,12 +1,18 @@
 // const express = require('express')
 import express from "express";
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+
+dotenv.config(); // to hide MONGO_URL password
 
 const app = express();
 
-const PORT = 9000;
-const MONGO_URL = "mongodb+srv://narenthar31:12345@cluster0.zatbl.mongodb.net";
-const movieDetails = [
+const PORT = 9000;  
+
+//process.env
+const MONGO_URL = process.env.MONGO_URL;
+// const MONGO_URL = "mongodb://localhost";
+const movies = [
   {
     id: "100",
     name: "Iron man 2",
@@ -84,6 +90,8 @@ const movieDetails = [
   },
 ];
 
+app.use(express.json()) //parse body to json
+
 async function createConnection() {
   const client = new MongoClient(MONGO_URL);
   await client.connect();
@@ -99,6 +107,7 @@ app.get("/", (request, response) => {
 //     response.send(movieDetails)
 // })
 app.get("/movies/:id", async (request, response) => {
+  console.log(request.params)
   const { id } = request.params;
   const client = await createConnection();
   // const filteredMovie = movieDetails.find((mov)=> mov.id===id)
@@ -111,10 +120,63 @@ app.get("/movies/:id", async (request, response) => {
   const notFound = { message: "Movie not found" };
   movie ? response.send(movie) : response.status(404).send(notFound);
 });
-// app.get("/movies",(request,response)=>{
-//     console.log(request.query)
-//     const {language} = request.query;
-//     const {rating} = request.query;
+app.delete("/movies/:id", async (request, response) => {
+  console.log(request.params)
+  const { id } = request.params;
+  const client = await createConnection();
+  // const filteredMovie = movieDetails.find((mov)=> mov.id===id)
+
+  const movie = await client
+    .db("guviexample")
+    .collection("movies")
+    .deleteOne({ id: id });
+  console.log(movie);
+  const notFound = { message: "Movie not found" };
+  movie ? response.send(movie) : response.status(404).send(notFound);
+});
+
+app.post("/movies", async (request, response) => {
+ 
+  const data = request.body
+  console.log(data)
+  const client = await createConnection();
+  // const filteredMovie = movieDetails.find((mov)=> mov.id===id)
+
+  const result = await client
+    .db("guviexample")
+    .collection("movies")
+    .insertMany(data);
+ response.send(result)  
+});
+
+app.put("/movies/:id", async (request, response) => {
+ const {id} = request.params
+  const data = request.body
+  console.log(data)
+  const client = await createConnection();
+  // const filteredMovie = movieDetails.find((mov)=> mov.id===id)
+
+  const result = await client
+    .db("guviexample")
+    .collection("movies")
+    .updateOne({id:id},{$set:data});
+ response.send(result)  
+});  
+
+
+app.get("/movies",async (request,response)=>{
+    console.log(request.query)
+    let filter = request.query;
+    if(filter.rating){
+      filter.rating= +filter.rating
+    }
+    const client = await createConnection();
+    const filteredMovies = await client
+    .db("guviexample")
+    .collection("movies")
+    .find(filter).toArray();
+ response.send(filteredMovies) 
+});
 //     let filteredMovies = movieDetails;
 
 //     // const languageFilter = movieDetails.filter((mov)=> mov.language===language)
