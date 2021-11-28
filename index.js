@@ -9,7 +9,7 @@ dotenv.config(); // to hide MONGO_URL password
 
 const app = express();
 
-const PORT = 9000;  
+const PORT = process.env.PORT || 9000;  
 
 //process.env
 const MONGO_URL = process.env.MONGO_URL;
