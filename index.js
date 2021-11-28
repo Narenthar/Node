@@ -103,7 +103,7 @@ async function createConnection() {
 export const client = await createConnection();
 
 app.get("/", (request, response) => {
-  response.send("Hello World");
+  response.send("***");
 });
 // app.get("/movies",(request,response)=>{
 //     response.send(movieDetails)
