@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import { getMovieById, deleteMoviesById, insertMovies, updateMoviesById, getMovies } from "./helper.js";
 import { moviesRouter } from "./routes/movies.js";
+import { usersRouter } from "./routes/users.js";
 import  cors  from 'cors';
 
 dotenv.config(); // to hide MONGO_URL password
@@ -50,6 +51,7 @@ app.get("/", (request, response) => {
 //     response.send(filteredMovies)
 // })
 app.use('/movies', moviesRouter)
+app.use('/users', usersRouter)
 app.listen(PORT, () => console.log("App started on", PORT));
 
 

@@ -18,6 +18,12 @@ async function insertMovies(data) {
     .collection("movies")
     .insertMany(data);
 }
+async function insertUsers(data) {
+  return await client
+    .db("guviexample")
+    .collection("users")
+    .insertOne(data);
+}
 async function deleteMoviesById(id) {
   return await client
     .db("guviexample")
@@ -31,4 +37,11 @@ async function getMovieById(id) {
     .findOne({ id: id });
 }
 
-export { getMovieById, deleteMoviesById, insertMovies, updateMoviesById, getMovies };
+async function getUsersByName(username) {
+  return await client
+    .db("guviexample")
+    .collection("users")
+    .findOne({ username:username });
+}
+
+export { getMovieById, deleteMoviesById, insertMovies, updateMoviesById, getMovies, insertUsers,getUsersByName };
